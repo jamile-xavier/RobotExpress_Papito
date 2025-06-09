@@ -4,31 +4,48 @@ Documentation    Cenários de testes do cadastro de usuários
 Library    Browser
 Library    FakerLibrary
 
-Resource     ../resources/base.robot    
+Resource     ../resources/base.resource   
+
+Suite Setup    Log     Tudo aqui ocorre antes da Suite(antes de todos os testes)
+Suite Teardown    Log     Tudo aqui ocorre depois da Suite(depois de todos os testes)
+
+Test Setup    Start Session
+Test Teardown    Take Screenshot
+
+*** Variables ***
+${name}    Fernando Papito
+${email}    papito@yahoo.com.br
+${password}    pwd123
 
 *** Test Cases ***
 Deve poder cadastrar um novo usuário
 
-    ${name}    Set Variable    Fernando Papito
-    ${email}    Set Variable    papito@yahoo.com
-    ${password}    Set Variable    pwd123
+    ${user}    Create Dictionary     
+    ...    name= Fernando Papito
+    ...    email= papito@yahoo.com.br
+    ...    password= pwd123
 
-    Remove user from database    ${email}
 
-    Start Session
-    Go To    http://localhost:3000/signup
+    Remove user from database    ${user}[email]
 
-    #Checkpoint
-    Wait For Elements State    css=h1    visible    5
-    Get Text    css=h1    equal    Faça seu cadastro
+    Go to signup page
+    Submit signup form    ${user}
+    Notice should be    Boas vindas ao Mark85, o seu gerenciador de tarefas
 
-    Fill Text    id=name     ${name}  
-    Fill Text    id=email    ${email} 
-    Fill Text    id=password    ${password}
+Não deve permitir o cadastro com email duplicado
+    [Tags]    dup
 
-    Click    id=buttonSignup
+     ${user}    Create Dictionary     
+    ...    name= Papito Fernando
+    ...    email= fernando@yahoo.com.br
+    ...    password= pwd123
+   
+    Remove user from database    ${user}[email]
+    Insert user from database    ${user}
 
-    Wait For Elements State    css=.notice p    visible    5
-    Get Text    css=.notice p    equal    Boas vindas ao Mark85, o seu gerenciador de tarefas.
-        
-
+    
+    Go to signup page
+    Submit signup form    ${user}
+    Notice should be    Oops! Já existe uma conta com o e-mail informado.
+   
+   

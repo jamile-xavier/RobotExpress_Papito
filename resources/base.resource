@@ -3,7 +3,13 @@
 Library    ../libs/database.py
 Library    Browser
 
+Resource    env.resource
+Resource    pages/SignupPage.resource
+
+*** Variables ***
+
+
 *** Keywords ***
 Start Session
     New Browser    browser=chromium    headless=False
-    New Page    http://localhost:3000
+    New Page     ${BASE_URL}   
