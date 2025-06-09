@@ -1,3 +1,2 @@
-database.py
-logs/
-__pycache__/
+/libs
+/logs
