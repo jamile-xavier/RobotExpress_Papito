@@ -1,30 +1,18 @@
 *** Settings ***
-Documentation    Cenários de testes do cadastro de usuários
+Documentation       Cenários de testes do cadastro de usuários
 
-Library    Browser
-Library    FakerLibrary
+Resource            ../resources/base.resource
 
-Resource     ../resources/base.resource   
+Test Setup          Start Session
+Test Teardown       Take Screenshot
 
-Suite Setup    Log     Tudo aqui ocorre antes da Suite(antes de todos os testes)
-Suite Teardown    Log     Tudo aqui ocorre depois da Suite(depois de todos os testes)
-
-Test Setup    Start Session
-Test Teardown    Take Screenshot
-
-*** Variables ***
-${name}    Fernando Papito
-${email}    papito@yahoo.com
-${password}    pwd123
 
 *** Test Cases ***
 Deve poder cadastrar um novo usuário
-
-    ${user}    Create Dictionary     
-    ...    name= Fernando Papito
-    ...    email= papito@yahoo.com
-    ...    password= pwd123
-
+    ${user}    Create Dictionary
+    ...    name=Fernando Papito
+    ...    email=papito@yahoo.com
+    ...    password=pwd123
 
     Remove user from database    ${user}[email]
 
@@ -35,42 +23,41 @@ Deve poder cadastrar um novo usuário
 Não deve permitir o cadastro com email duplicado
     [Tags]    dup
 
-     ${user}    Create Dictionary     
-    ...    name= Papito Fernando
-    ...    email= fernando@yahoo.com
-    ...    password= pwd123
-   
+    ${user}    Create Dictionary
+    ...    name=Papito Fernando
+    ...    email=fernando@gmail.com
+    ...    password=pwd123
+
     Remove user from database    ${user}[email]
     Insert user from database    ${user}
 
-    
     Go to signup page
     Submit signup form    ${user}
     Notice should be    Oops! Já existe uma conta com o e-mail informado.
-   
-Campos obrigatórios
 
-    [Tags]    Required
+Campos obrigatórios
+    [Tags]    required
 
     ${user}    Create Dictionary
     ...    name=${EMPTY}
     ...    email=${EMPTY}
     ...    password=${EMPTY}
-    
+
     Go to signup page
     Submit signup form    ${user}
 
     Alert should be    Informe seu nome completo
     Alert should be    Informe seu e-email
-    Alert should be    Informe uma senha com pelo menos 6 digitos 
+    Alert should be    Informe uma senha com pelo menos 6 digitos
 
 Não deve cadastrar com email incorreto
     [Tags]    inv_email
+
     ${user}    Create Dictionary
     ...    name=Charles Xavier
     ...    email=xavier.com.br
     ...    password=123456
-    
+
     Go to signup page
     Submit signup form    ${user}
     Alert should be    Digite um e-mail válido
@@ -78,20 +65,20 @@ Não deve cadastrar com email incorreto
 Não deve cadastrar com senha muito curta
     [Tags]    temp
 
-    @{password_list}    Create List    1    12    123    1234    12345
+    @{password_list}    Create List     1    12    123    1234    12345
 
     FOR    ${password}    IN    @{password_list}
         ${user}    Create Dictionary
-    ...    name=${EMPTY}
-    ...    email=${EMPTY}
-    ...    password=${password}
-    
-    Go to signup page
-    Submit signup form    ${user}
+        ...    name=Fernando Papito
+        ...    email=papito@msn.com
+        ...    password=${password}
 
-    Alert should be    Informe uma senha com pelo menos 6 digitos  
+        Go to signup page
+        Submit signup form    ${user}
 
+        Alert should be    Informe uma senha com pelo menos 6 digitos
     END
+
 
 Não deve cadastrar com senha de 1 digito
     [Tags]    short_pass
@@ -116,19 +103,18 @@ Não deve cadastrar com senha de 4 digitos
 Não deve cadastrar com senha de 5 digitos
     [Tags]    short_pass
     [Template]
-    Short password    12345 
+    Short password    12345
 
 *** Keywords ***
-
 Short password
-    [Arguments]    ${short_pass}
+    [Arguments]        ${short_pass}
 
     ${user}    Create Dictionary
-    ...    name=${EMPTY}
-    ...    email=${EMPTY}
+    ...    name=Fernando Papito
+    ...    email=papito@msn.com
     ...    password=${short_pass}
-    
+
     Go to signup page
     Submit signup form    ${user}
 
-    Alert should be    Informe uma senha com pelo menos 6 digitos  
+    Alert should be    Informe uma senha com pelo menos 6 digitos

@@ -1,12 +1,11 @@
 *** Settings ***
-Documentation    Ações e elementos do componente de mensagens de alertas
+Documentation            Ações e elementos do componente de mensagens de alertas
 
-Library    Browser
+Library        Browser
 
 *** Keywords ***
-
 Alert should be
-    [Arguments]    ${expected_text}
+    [Arguments]        ${expected_text}
+
     Wait For Elements State    css=.alert-error >> text=${expected_text}
-    ...    visible    5
-   
+    ...        visible        5

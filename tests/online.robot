@@ -1,12 +1,10 @@
-***Settings***
-Documentation    Online
+*** Settings ***
+Documentation            Online
 
-Resource    ../resources/base.resource
+Resource        ../resources/base.resource
 
-***Test Cases***
-
+*** Test Cases ***
 Webapp deve estar online
-  
-    Start Session
-    Browser.Get Title    equal    Mark85 by QAx
     
+    Start Session
+    Get Title       equal        Mark85 by QAx
