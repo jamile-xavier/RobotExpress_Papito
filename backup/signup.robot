@@ -44,7 +44,7 @@ Não deve permitir o cadastro com email duplicado
     Insert user from database    ${user}
 
     
-    Browser.Go To  signup page
+    Go to signup page
     Submit signup form    ${user}
     Notice should be    Oops! Já existe uma conta com o e-mail informado.
    
@@ -57,7 +57,7 @@ Campos obrigatórios
     ...    email=${EMPTY}
     ...    password=${EMPTY}
     
-    Browser.Go To  signup page
+    Go to signup page
     Submit signup form    ${user}
 
     Alert should be    Informe seu nome completo
@@ -71,7 +71,7 @@ Não deve cadastrar com email incorreto
     ...    email=xavier.com.br
     ...    password=123456
     
-    Browser.Go To  signup page
+    Go to signup page
     Submit signup form    ${user}
     Alert should be    Digite um e-mail válido
 
@@ -81,14 +81,54 @@ Não deve cadastrar com senha muito curta
     @{password_list}    Create List    1    12    123    1234    12345
 
     FOR    ${password}    IN    @{password_list}
-    ${user}    Create Dictionary
+        ${user}    Create Dictionary
     ...    name=${EMPTY}
     ...    email=${EMPTY}
     ...    password=${password}
     
-    Browser.Go To  signup page
+    Go to signup page
     Submit signup form    ${user}
 
     Alert should be    Informe uma senha com pelo menos 6 digitos  
 
     END
+
+Não deve cadastrar com senha de 1 digito
+    [Tags]    short_pass
+    [Template]
+    Short password    1
+
+Não deve cadastrar com senha de 2 digitos
+    [Tags]    short_pass
+    [Template]
+    Short password    12
+
+Não deve cadastrar com senha de 3 digitos
+    [Tags]    short_pass
+    [Template]
+    Short password    123
+
+Não deve cadastrar com senha de 4 digitos
+    [Tags]    short_pass
+    [Template]
+    Short password    1234
+
+Não deve cadastrar com senha de 5 digitos
+    [Tags]    short_pass
+    [Template]
+    Short password    12345 
+
+*** Keywords ***
+
+Short password
+    [Arguments]    ${short_pass}
+
+    ${user}    Create Dictionary
+    ...    name=${EMPTY}
+    ...    email=${EMPTY}
+    ...    password=${short_pass}
+    
+    Go to signup page
+    Submit signup form    ${user}
+
+    Alert should be    Informe uma senha com pelo menos 6 digitos  
